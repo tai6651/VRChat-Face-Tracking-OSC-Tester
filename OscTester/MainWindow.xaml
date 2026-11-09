@@ -191,7 +191,9 @@
             </StackPanel>
         </Border>
 
-        <Border Grid.Row="3" Style="{StaticResource Card}" Margin="22,12,22,0">
+        <TabControl Grid.Row="3" Margin="22,12,22,0" BorderBrush="{StaticResource Line}" Background="White">
+        <TabItem Header="Tracking keys">
+        <Border Style="{StaticResource Card}" BorderThickness="0">
             <DockPanel>
                 <DockPanel DockPanel.Dock="Top" Margin="0,0,0,10">
                     <Button DockPanel.Dock="Right" Content="Reset all to 0"
@@ -213,6 +215,11 @@
                 </TabControl>
             </DockPanel>
         </Border>
+        </TabItem>
+        <TabItem Header="Animation player" xmlns:local="clr-namespace:OscTester">
+            <local:AnimationPlayer x:Name="Player" Margin="16,12" />
+        </TabItem>
+        </TabControl>
 
         <TextBlock Grid.Row="4" Margin="24,9,24,12" Foreground="{StaticResource Muted}"
                    FontSize="12" TextWrapping="Wrap"

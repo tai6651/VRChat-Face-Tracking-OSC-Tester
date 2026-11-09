@@ -36,9 +36,11 @@ public partial class MainWindow : Window
             new("Throat & neck", parameters[98..])
         };
         Groups.SelectedIndex = 0;
+        Player.PoseChanged += ApplyAnimationPose;
         statusTimer.Tick += (_, _) => UpdateStatus();
         Closed += (_, _) =>
         {
+            Player.Close();
             statusTimer.Stop();
             session?.Stop();
         };
@@ -48,6 +50,20 @@ public partial class MainWindow : Window
     {
         values[index] = value;
         Volatile.Write(ref packet, OscPacket.CreateFacePacket(values));
+    }
+
+    private void ApplyAnimationPose(byte[] pose, int[] channels)
+    {
+        bool changed = false;
+        foreach (int index in channels)
+        {
+            byte value = pose[index];
+            changed |= values[index] != value;
+            values[index] = value;
+            parameters[index].ApplyPlaybackValue(value);
+        }
+        if (changed)
+            Volatile.Write(ref packet, OscPacket.CreateFacePacket(values));
     }
 
     private void ResetAll_Click(object sender, RoutedEventArgs e)

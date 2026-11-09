@@ -63,6 +63,20 @@ internal sealed class TrackingParameter(int index, Action<int, byte> onChange) :
         Notify(nameof(ValueText));
     }
 
+    internal void ApplyPlaybackValue(byte newValue)
+    {
+        if (value == newValue && !hasInvalidValue)
+            return;
+
+        bool changed = value != newValue;
+        value = newValue;
+        valueText = newValue.ToString(CultureInfo.InvariantCulture);
+        HasInvalidValue = false;
+        if (changed)
+            Notify(nameof(Value));
+        Notify(nameof(ValueText));
+    }
+
     private void SetValue(byte newValue)
     {
         if (value == newValue)

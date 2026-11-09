@@ -1,0 +1,221 @@
+<Window x:Class="OscTester.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="VRChat Face Tracking OSC Tester"
+        Width="1000" Height="780" MinWidth="790" MinHeight="620"
+        WindowStartupLocation="CenterScreen" Background="#F3F5F9"
+        FontFamily="Segoe UI" FontSize="14" Foreground="#17283E"
+        UseLayoutRounding="True">
+    <Window.Resources>
+        <SolidColorBrush x:Key="Muted" Color="#4B6078" />
+        <SolidColorBrush x:Key="Line" Color="#DCE3ED" />
+        <SolidColorBrush x:Key="Blue" Color="#2059B3" />
+        <Style x:Key="Card" TargetType="Border">
+            <Setter Property="Background" Value="White" />
+            <Setter Property="BorderBrush" Value="{StaticResource Line}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="8" />
+            <Setter Property="Padding" Value="16,12" />
+        </Style>
+        <Style x:Key="FieldLabel" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{StaticResource Muted}" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Margin" Value="0,0,0,5" />
+        </Style>
+        <Style x:Key="Input" TargetType="TextBox">
+            <Setter Property="Background" Value="#FAFBFE" />
+            <Setter Property="Foreground" Value="#17283E" />
+            <Setter Property="BorderBrush" Value="#A8B8CE" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Padding" Value="7,3" />
+            <Setter Property="MinHeight" Value="30" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+        </Style>
+        <Style x:Key="ActionButton" TargetType="Button">
+            <Setter Property="Padding" Value="14,5" />
+            <Setter Property="MinHeight" Value="32" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Cursor" Value="Hand" />
+        </Style>
+        <DataTemplate x:Key="ParameterRow">
+            <Border BorderBrush="#E8EDF4" BorderThickness="0,0,0,1" Padding="10,5">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="222" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="62" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="{Binding Name}" VerticalAlignment="Center">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsFeatured}" Value="True">
+                                        <Setter Property="FontWeight" Value="Bold" />
+                                        <Setter Property="Foreground" Value="#194582" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+                    <Slider Grid.Column="1" Minimum="0" Maximum="255" TickFrequency="1"
+                            SmallChange="1" LargeChange="16" IsSnapToTickEnabled="True"
+                            IsMoveToPointEnabled="True" Margin="0,0,16,0" VerticalAlignment="Center"
+                            AutomationProperties.Name="{Binding Name}"
+                            Value="{Binding Value, Mode=TwoWay}" />
+                    <TextBox Grid.Column="2" TextAlignment="Right" FontFamily="Consolas"
+                             AutomationProperties.Name="{Binding Name, StringFormat='{}{0} value'}"
+                             Text="{Binding ValueText, UpdateSourceTrigger=PropertyChanged}">
+                        <TextBox.Style>
+                            <Style TargetType="TextBox" BasedOn="{StaticResource Input}">
+                                <Setter Property="ToolTip" Value="Enter a whole number from 0 to 255." />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding HasInvalidValue}" Value="True">
+                                        <Setter Property="Background" Value="#FFF1F1" />
+                                        <Setter Property="BorderBrush" Value="#B42328" />
+                                        <Setter Property="ToolTip" Value="Enter a whole number from 0 to 255. OSC keeps the last valid value." />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBox.Style>
+                    </TextBox>
+                </Grid>
+            </Border>
+        </DataTemplate>
+        <DataTemplate x:Key="ParameterGroup">
+            <ListBox ItemsSource="{Binding Parameters}" ItemTemplate="{StaticResource ParameterRow}"
+                     AutomationProperties.Name="{Binding Title}" BorderThickness="0"
+                     Padding="3" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                     ScrollViewer.VerticalScrollBarVisibility="Auto"
+                     VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling"
+                     VirtualizingPanel.ScrollUnit="Pixel">
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="ListBoxItem">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                        <Setter Property="Focusable" Value="False" />
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="ListBoxItem">
+                                    <ContentPresenter HorizontalAlignment="Stretch" />
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </ListBox.ItemContainerStyle>
+            </ListBox>
+        </DataTemplate>
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Border Background="#142743" Padding="25,20">
+            <DockPanel LastChildFill="True">
+                <Border DockPanel.Dock="Right" Background="#233D61" CornerRadius="6" Padding="12,7"
+                        VerticalAlignment="Center" Margin="16,0,0,0">
+                    <TextBlock Foreground="#E1EBFF" Text="NATIVE OSC  /  60 Hz" FontWeight="SemiBold" FontSize="12" />
+                </Border>
+                <StackPanel>
+                    <TextBlock Text="VRChat Face Tracking OSC Tester" Foreground="White"
+                               FontSize="26" FontWeight="SemiBold" />
+                    <TextBlock Text="Drive Unified Expressions directly from your desktop."
+                               Foreground="#C9D8EE" Margin="0,4,0,0" />
+                </StackPanel>
+            </DockPanel>
+        </Border>
+
+        <Border Grid.Row="1" Style="{StaticResource Card}" Margin="22,14,22,0">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Grid x:Name="NetworkFields">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="116" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="128" />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Margin="0,0,12,0">
+                        <TextBlock Text="Listen IP" Style="{StaticResource FieldLabel}" />
+                        <TextBox x:Name="ListenIp" Text="127.0.0.1" Style="{StaticResource Input}"
+                                 AutomationProperties.Name="Listen IP" />
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" Margin="0,0,18,0">
+                        <TextBlock Text="Listen port" Style="{StaticResource FieldLabel}" />
+                        <TextBox x:Name="ListenPort" Text="9001" Style="{StaticResource Input}"
+                                 ToolTip="VRChat sends status to this UDP port."
+                                 AutomationProperties.Name="Listen port" />
+                    </StackPanel>
+                    <StackPanel Grid.Column="2" Margin="0,0,12,0">
+                        <TextBlock Text="VRChat IP" Style="{StaticResource FieldLabel}" />
+                        <TextBox x:Name="VrChatIp" Text="127.0.0.1" Style="{StaticResource Input}"
+                                 AutomationProperties.Name="VRChat IP" />
+                    </StackPanel>
+                    <StackPanel Grid.Column="3" Margin="0,0,12,0">
+                        <TextBlock Text="Send to VRChat port" Style="{StaticResource FieldLabel}" />
+                        <TextBox x:Name="VrChatPort" Text="9000" Style="{StaticResource Input}"
+                                 ToolTip="VRChat receives tracking on this UDP port."
+                                 AutomationProperties.Name="Send to VRChat port" />
+                    </StackPanel>
+                </Grid>
+                <Button x:Name="StartStop" Grid.Column="1" VerticalAlignment="Bottom"
+                        Style="{StaticResource ActionButton}" MinWidth="118"
+                        Background="{StaticResource Blue}" Foreground="White" BorderThickness="0"
+                        Content="Start streaming" Click="StartStop_Click" />
+            </Grid>
+        </Border>
+
+        <Border Grid.Row="2" Style="{StaticResource Card}" Margin="22,10,22,0">
+            <StackPanel>
+                <DockPanel>
+                    <TextBlock x:Name="Traffic" DockPanel.Dock="Right" Text="0 sent  /  0 received"
+                               Foreground="{StaticResource Muted}" Margin="12,0,0,0" />
+                    <TextBlock x:Name="StreamStatus" Text="Ready to stream" TextWrapping="Wrap"
+                               AutomationProperties.LiveSetting="Polite" FontWeight="SemiBold" />
+                </DockPanel>
+                <DockPanel Margin="0,6,0,0">
+                    <TextBlock x:Name="AvatarStatus" DockPanel.Dock="Right" Text="Native —    Face —    Eyes —"
+                               Foreground="{StaticResource Muted}" Margin="12,0,0,0" />
+                    <TextBlock Text="Avatar" Foreground="{StaticResource Muted}" Margin="0,0,7,0" />
+                    <TextBox x:Name="AvatarId" Text="Waiting for /avatar/change" IsReadOnly="True"
+                             AutomationProperties.Name="Avatar ID" BorderThickness="0" Padding="0"
+                             Background="Transparent" Foreground="#17283E" />
+                </DockPanel>
+            </StackPanel>
+        </Border>
+
+        <Border Grid.Row="3" Style="{StaticResource Card}" Margin="22,12,22,0">
+            <DockPanel>
+                <DockPanel DockPanel.Dock="Top" Margin="0,0,0,10">
+                    <Button DockPanel.Dock="Right" Content="Reset all to 0"
+                            Style="{StaticResource ActionButton}" Click="ResetAll_Click" />
+                    <StackPanel>
+                        <TextBlock Text="Tracking keys" FontSize="18" FontWeight="SemiBold" />
+                        <TextBlock Text="102 keys  ·  Drag a slider or enter a whole number from 0 to 255."
+                                   Foreground="{StaticResource Muted}" FontSize="12" Margin="0,3,0,0" />
+                    </StackPanel>
+                </DockPanel>
+                <TabControl x:Name="Groups" BorderBrush="{StaticResource Line}" Background="White"
+                            ContentTemplate="{StaticResource ParameterGroup}"
+                            AutomationProperties.Name="Tracking key groups">
+                    <TabControl.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Title}" Margin="4,3" />
+                        </DataTemplate>
+                    </TabControl.ItemTemplate>
+                </TabControl>
+            </DockPanel>
+        </Border>
+
+        <TextBlock Grid.Row="4" Margin="24,9,24,12" Foreground="{StaticResource Muted}"
+                   FontSize="12" TextWrapping="Wrap"
+                   Text="In VRChat, enable OSC and load an avatar with Use All Tracking Keys enabled." />
+    </Grid>
+</Window>

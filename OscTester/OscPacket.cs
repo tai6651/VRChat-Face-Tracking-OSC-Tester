@@ -12,6 +12,17 @@ internal static class OscPacket
 
     private static ReadOnlySpan<byte> FaceHeader => "/tracking/face/v1\0\0\0,b\0\0"u8;
 
+    public static byte[] CreateParameterMessage(string name, char tag, int argumentSize = 0)
+    {
+        string address = "/avatar/parameters/" + name;
+        int addressSize = (Encoding.ASCII.GetByteCount(address) + 4) & ~3;
+        var packet = new byte[addressSize + 4 + argumentSize];
+        Encoding.ASCII.GetBytes(address, packet);
+        packet[addressSize] = (byte)',';
+        packet[addressSize + 1] = (byte)tag;
+        return packet;
+    }
+
     public static byte[] CreateFacePacket(ReadOnlySpan<byte> values)
     {
         if (values.Length != FacePayloadSize)

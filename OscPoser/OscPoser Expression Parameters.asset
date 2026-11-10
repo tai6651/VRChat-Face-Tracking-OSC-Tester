@@ -1,0 +1,970 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1506855854, guid: 67cc4cb7839cd3741b63733d5adf0442, type: 3}
+  m_Name: OscPoser Expression Parameters
+  m_EditorClassIdentifier: 
+  isEmpty: 0
+  parameters:
+  - name: OscPoser/isEnabled
+    valueType: 2
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Muscle00
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Muscle01
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Muscle02
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Muscle03
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Muscle04
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Muscle05
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Muscle06
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Muscle07
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Muscle08
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Muscle09
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Muscle10
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Muscle11
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Muscle12
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Muscle13
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Muscle14
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Muscle15
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Muscle16
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Muscle17
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Muscle18
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Muscle19
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Muscle20
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Muscle21
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Muscle22
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Muscle23
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Muscle24
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Muscle25
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Muscle26
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Muscle27
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Muscle28
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Muscle29
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Muscle30
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Muscle31
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Muscle32
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Muscle33
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Muscle34
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Muscle35
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Muscle36
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Muscle37
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Muscle38
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Muscle39
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Muscle40
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Muscle41
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Muscle42
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Muscle43
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Muscle44
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Muscle45
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Muscle46
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Muscle47
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Muscle48
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Muscle49
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Muscle50
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Muscle51
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Muscle52
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Muscle53
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Muscle54
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Muscle55
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Muscle56
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Muscle57
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Muscle58
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Muscle59
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Muscle60
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Muscle61
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Muscle62
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Muscle63
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Muscle64
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Muscle65
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Muscle66
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Muscle67
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Muscle68
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Muscle69
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Muscle70
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Muscle71
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Muscle72
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Muscle73
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Muscle74
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Muscle75
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Muscle76
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Muscle77
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Muscle78
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Muscle79
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Muscle80
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Muscle81
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Muscle82
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Muscle83
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Muscle84
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Muscle85
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Muscle86
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Muscle87
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Muscle88
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Muscle89
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Muscle90
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Muscle91
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Muscle92
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Muscle93
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Muscle94
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/DanceX
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/DanceY
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/DanceZ
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/BodyQXPositive
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/BodyQXNegative
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/BodyQYPositive
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/BodyQYNegative
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/BodyQZPositive
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/BodyQZNegative
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/BodyQW
+    valueType: 1
+    saved: 0
+    defaultValue: 1
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0

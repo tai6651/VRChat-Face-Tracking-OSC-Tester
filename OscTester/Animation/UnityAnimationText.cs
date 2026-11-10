@@ -10,9 +10,12 @@ internal static class UnityAnimationText
     {
         var curves = new Dictionary<string, FaceCurve>(StringComparer.Ordinal);
         var editorCurves = new Dictionary<string, FaceCurve>(StringComparer.Ordinal);
+        var humanoid = new Dictionary<int, FaceCurve>();
+        var editorHumanoid = new Dictionary<int, FaceCurve>();
         var points = new List<FaceKey>();
         var key = new KeyFields();
-        string name = Path.GetFileNameWithoutExtension(file), section = "", attribute = "";
+        string name = Path.GetFileNameWithoutExtension(file), section = "", attribute = "", path = "";
+        int classId = 0;
         double rate = 0, start = 0, stop = 0, lastTime = 0;
         bool animation = false, inKey = false;
 
@@ -32,13 +35,13 @@ internal static class UnityAnimationText
         void FinishCurve()
         {
             FinishKey();
-            if (points.Count != 0 && attribute.StartsWith("blendShape.", StringComparison.Ordinal))
-            {
-                var target = section == "m_FloatCurves" ? curves : editorCurves;
-                target.TryAdd(attribute["blendShape.".Length..], new FaceCurve(points));
-            }
+            bool runtime = section == "m_FloatCurves";
+            AddNamedCurve(attribute, classId, path, points, runtime ? curves : editorCurves,
+                runtime ? humanoid : editorHumanoid);
             points.Clear();
             attribute = "";
+            path = "";
+            classId = 0;
         }
 
         foreach (string line in File.ReadLines(file))
@@ -83,6 +86,10 @@ internal static class UnityAnimationText
                 attribute = Unquote(value.ToString());
                 continue;
             }
+            if (label.SequenceEqual("path"))
+                path = Unquote(value.ToString());
+            if (label.SequenceEqual("classID"))
+                int.TryParse(value, out classId);
             if (label.SequenceEqual("m_StartTime"))
                 start = Number(value);
             else if (label.SequenceEqual("m_StopTime"))
@@ -95,11 +102,28 @@ internal static class UnityAnimationText
             throw new InvalidDataException("The selected YAML file does not contain a Unity AnimationClip.");
         foreach (var (morph, curve) in editorCurves)
             curves.TryAdd(morph, curve);
-        return CreateClip(name, rate, start, stop, lastTime, curves);
+        foreach (var (channel, curve) in editorHumanoid)
+            humanoid.TryAdd(channel, curve);
+        return CreateClip(name, rate, start, stop, lastTime, curves, humanoid);
+    }
+
+    public static void AddNamedCurve(string attribute, int classId, string path, List<FaceKey> points,
+        Dictionary<string, FaceCurve> curves, Dictionary<int, FaceCurve> humanoid)
+    {
+        if (points.Count == 0)
+            return;
+        if (attribute.StartsWith("blendShape.", StringComparison.Ordinal))
+            curves.TryAdd(attribute["blendShape.".Length..], new FaceCurve(points));
+        else if (classId == 95 && path.Length == 0 && HumanoidChannels.TryGetAttribute(attribute, out int channel))
+        {
+            var curve = new FaceCurve(points);
+            if (curve.KeyCount > 0)
+                humanoid.TryAdd(channel, curve);
+        }
     }
 
     public static FaceClip CreateClip(string name, double rate, double start, double stop, double lastTime,
-        Dictionary<string, FaceCurve> curves)
+        Dictionary<string, FaceCurve> curves, Dictionary<int, FaceCurve> humanoid)
     {
         rate = double.IsFinite(rate) && rate > 0 ? rate : 60;
         start = double.IsFinite(start) ? start : 0;
@@ -107,7 +131,7 @@ internal static class UnityAnimationText
             stop = Math.Max(start, lastTime);
         if (stop - start >= TimeSpan.MaxValue.TotalSeconds || (stop - start) * rate >= int.MaxValue - 1)
             throw new InvalidDataException("The animation timeline exceeds the player limit.");
-        return new FaceClip(name, rate, start, stop, curves);
+        return new FaceClip(name, rate, start, stop, curves, humanoid);
     }
 
     public static double Number(ReadOnlySpan<char> value)

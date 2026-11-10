@@ -3,7 +3,7 @@ using System.Text;
 namespace OscTester;
 
 internal sealed record FaceClip(string Name, double FrameRate, double Start, double End,
-    IReadOnlyDictionary<string, FaceCurve> Curves)
+    IReadOnlyDictionary<string, FaceCurve> Curves, IReadOnlyDictionary<int, FaceCurve> HumanoidCurves)
 {
     public double Duration => End - Start;
     public int LastFrame => (int)Math.Ceiling(Math.Max(0, Duration * FrameRate - 0.001));

@@ -62,10 +62,12 @@ internal static partial class UnityBinaryDump
         var constants = new List<double>();
         var bindings = new List<Binding>();
         var curves = new Dictionary<string, FaceCurve>(StringComparer.Ordinal);
+        var humanoid = new Dictionary<int, FaceCurve>();
         var section = Section.None;
         int sectionIndent = 0, streamCount = 0, denseCount = 0, denseFrames = 0;
         double frameRate = 0, denseRate = 0, denseStart = 0, start = 0, stop = 0, lastTime = 0;
-        string name = "AnimationClip", attributeName = "";
+        string name = "AnimationClip", attributeName = "", explicitPath = "";
+        int explicitClass = 0;
         Binding? binding = null;
         var points = new List<FaceKey>();
         UnityAnimationText.KeyFields? key = null;
@@ -84,10 +86,11 @@ internal static partial class UnityBinaryDump
         void FinishCurve()
         {
             FinishKey();
-            if (points.Count > 0 && attributeName.StartsWith("blendShape.", StringComparison.Ordinal))
-                curves.TryAdd(attributeName["blendShape.".Length..], new FaceCurve(points));
+            UnityAnimationText.AddNamedCurve(attributeName, explicitClass, explicitPath, points, curves, humanoid);
             points.Clear();
             attributeName = "";
+            explicitPath = "";
+            explicitClass = 0;
         }
 
         foreach (string line in lines)
@@ -172,6 +175,10 @@ internal static partial class UnityBinaryDump
                     }
                     if (label == "attribute")
                         attributeName = value.Trim('"');
+                    if (label == "path")
+                        explicitPath = value.Trim('"');
+                    if (label == "classID")
+                        explicitClass = Int(value);
                     key?.Read(label, value);
                     break;
                 case Section.None:
@@ -202,14 +209,14 @@ internal static partial class UnityBinaryDump
         int channel = 0;
         foreach (Binding item in bindings)
         {
-            if (item.Type == 137 && item.CustomType == 20)
+            if (item.Type == 137 && item.CustomType == 20 || IsHumanoidBinding(item))
                 tracks.Add(channel, (item, []));
             channel += item.Type is 4 or 224
                 ? item.Attribute switch { 2 => 4, 1 or 3 or 4 => 3, _ => 1 }
                 : 1;
         }
         if (tracks.Count == 0)
-            return UnityAnimationText.CreateClip(name, frameRate, start, stop, lastTime, curves);
+            return UnityAnimationText.CreateClip(name, frameRate, start, stop, lastTime, curves, humanoid);
 
         // Unity stores a time and key count, then an index and four polynomial coefficients per key.
         for (int cursor = 0; cursor < streamed.Count;)
@@ -252,11 +259,17 @@ internal static partial class UnityBinaryDump
             if (curve.KeyCount > 0)
             {
                 lastTime = Math.Max(lastTime, curve.LastTime);
-                curves.TryAdd(FaceMorphs.NameForHash(track.Binding.Attribute), curve);
+                if (IsHumanoidBinding(track.Binding))
+                    humanoid.TryAdd((int)track.Binding.Attribute, curve);
+                else
+                    curves.TryAdd(FaceMorphs.NameForHash(track.Binding.Attribute), curve);
             }
         }
-        return UnityAnimationText.CreateClip(name, frameRate, start, stop, lastTime, curves);
+        return UnityAnimationText.CreateClip(name, frameRate, start, stop, lastTime, curves, humanoid);
     }
+
+    private static bool IsHumanoidBinding(Binding binding) => binding.Type == 95 && binding.CustomType == 8
+        && binding.Path == 0 && HumanoidChannels.Supports(binding.Attribute);
 
     private static (string Label, string Value) Field(string text)
     {

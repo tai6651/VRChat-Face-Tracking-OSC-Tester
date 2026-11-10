@@ -22,11 +22,15 @@ public partial class AnimationPlayer : UserControl
     private CancellationTokenSource? loading;
     private FaceClip? clip;
     private FacePose? pose;
+    private HumanoidPose? humanoidPose;
+    private float[]? humanoidFrame;
     private MediaPlayer? media;
     private bool audioReady;
+    private bool playbackActive;
     private double position;
 
     internal event Action<byte[], int[]>? PoseChanged;
+    internal float[]? HumanoidFrame => Volatile.Read(ref humanoidFrame);
 
     public AnimationPlayer()
     {
@@ -37,6 +41,8 @@ public partial class AnimationPlayer : UserControl
     internal void Close()
     {
         loading?.Cancel();
+        playbackActive = false;
+        PublishHumanoidFrame(position);
         timer.Stop();
         media?.Close();
         import?.Dispose();
@@ -122,6 +128,12 @@ public partial class AnimationPlayer : UserControl
 
             clip = selected;
             pose = mapped;
+            humanoidPose = new HumanoidPose(selected);
+            playbackActive = false;
+            HumanoidInfo.Text = humanoidPose.HasTracks
+                ? $"{humanoidPose.MuscleCount}/{HumanoidChannels.MuscleCount} muscle tracks"
+                    + (humanoidPose.HasRoot ? " · root motion" : "")
+                : "No humanoid tracks in this clip";
             string mapping = mapped.TrackCount == 0 ? "no mapped face tracks"
                 : $"{mapped.TrackCount} of {selected.Curves.Count} face tracks mapped";
             ClipInfo.Text = $"{selected.Name}   •   {selected.FrameRate:0.###} fps   •   {mapping}";
@@ -215,6 +227,8 @@ public partial class AnimationPlayer : UserControl
             return;
         if (position >= clip.Duration)
             Seek(0);
+        playbackActive = true;
+        PublishHumanoidFrame(position);
         clock.Start();
         SyncAudio();
         timer.Start();
@@ -225,6 +239,7 @@ public partial class AnimationPlayer : UserControl
 
     private void Stop_Click(object sender, RoutedEventArgs e)
     {
+        playbackActive = false;
         clock.Reset();
         timer.Stop();
         Seek(0);
@@ -269,6 +284,7 @@ public partial class AnimationPlayer : UserControl
         double current = CurrentTime();
         if (current >= clip.Duration)
         {
+            playbackActive = false;
             clock.Reset();
             timer.Stop();
             position = clip.Duration;
@@ -332,6 +348,18 @@ public partial class AnimationPlayer : UserControl
         TotalFrames.Text = (clip.LastFrame + 1).ToString(CultureInfo.InvariantCulture);
         pose.Evaluate(time, values);
         PoseChanged?.Invoke(values, pose.Channels);
+        PublishHumanoidFrame(time);
+    }
+
+    private void SendHumanoidPose_Changed(object sender, RoutedEventArgs e) => PublishHumanoidFrame(CurrentTime());
+
+    private void PublishHumanoidFrame(double time)
+    {
+        float[]? frame = null;
+        if (SendHumanoidPose?.IsChecked == true)
+            frame = playbackActive && humanoidPose is { HasTracks: true }
+                ? humanoidPose.Evaluate(time) : [];
+        Volatile.Write(ref humanoidFrame, frame);
     }
 
     private void SetTransport()

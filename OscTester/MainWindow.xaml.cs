@@ -95,7 +95,7 @@ public partial class MainWindow : Window
         }
 
         using var activeSession = new OscSession(listenEndpoint, destination,
-            () => Volatile.Read(ref packet), () => Player.HumanoidFrame);
+            () => Volatile.Read(ref packet), () => Player.HumanoidFrame, () => Player.CameraFrame);
         session = activeSession;
         NetworkFields.IsEnabled = false;
         StartStop.Content = "Stop streaming";

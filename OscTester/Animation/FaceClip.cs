@@ -5,6 +5,7 @@ namespace OscTester;
 internal sealed record FaceClip(string Name, double FrameRate, double Start, double End,
     IReadOnlyDictionary<string, FaceCurve> Curves, IReadOnlyDictionary<int, FaceCurve> HumanoidCurves)
 {
+    public CameraTrack? Camera { get; init; }
     public double Duration => End - Start;
     public int LastFrame => (int)Math.Ceiling(Math.Max(0, Duration * FrameRate - 0.001));
 }
@@ -156,22 +157,10 @@ internal static class FaceMorphs
             Rules[normalized] = resolved;
             foreach (string spelling in new[] { alias, normalized, alias.Normalize(NormalizationForm.FormD) })
             {
-                Hashes.TryAdd(Crc32(spelling), normalized);
-                Hashes.TryAdd(Crc32("blendShape." + spelling), normalized);
+                Hashes.TryAdd(UnityAnimationText.BindingHash(spelling), normalized);
+                Hashes.TryAdd(UnityAnimationText.BindingHash("blendShape." + spelling), normalized);
             }
         }
-    }
-
-    private static uint Crc32(string name)
-    {
-        uint crc = uint.MaxValue;
-        foreach (byte value in Encoding.UTF8.GetBytes(name))
-        {
-            crc ^= value;
-            for (int bit = 0; bit < 8; bit++)
-                crc = (crc >> 1) ^ ((crc & 1) != 0 ? 0xedb88320u : 0);
-        }
-        return ~crc;
     }
 
     private static (string, double)[] Eyes(string prefix, double gain) =>

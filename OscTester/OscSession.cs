@@ -5,7 +5,7 @@ namespace OscTester;
 
 internal sealed class OscSession(
     IPEndPoint listenEndpoint, IPEndPoint destination, Func<byte[]> getPacket,
-    Func<float[]?> getHumanoidFrame) : IDisposable
+    Func<float[]?> getHumanoidFrame, Func<CameraOutputFrame?> getCameraFrame) : IDisposable
 {
     public const int TargetRate = 60;
 
@@ -29,6 +29,7 @@ internal sealed class OscSession(
         using var timer = new FrameTimer();
 
         var humanoid = new HumanoidOscOutput(packet => sender.SendTo(packet, destination));
+        var camera = new CameraOscOutput(packet => sender.SendTo(packet, destination));
         Task sending = Task.Run(() =>
         {
             try
@@ -38,10 +39,13 @@ internal sealed class OscSession(
                     sender.SendTo(getPacket(), destination);
                     Interlocked.Increment(ref sentPackets);
                     humanoid.Update(getHumanoidFrame());
+                    camera.Update(getCameraFrame());
                 });
             }
             finally
             {
+                try { camera.Release(); }
+                catch (SocketException) { }
                 try { humanoid.Release(); }
                 catch (SocketException) { } // A closed or unreachable destination cannot receive the reset.
             }

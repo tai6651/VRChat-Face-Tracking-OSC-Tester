@@ -1,0 +1,88 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1506855854, guid: 67cc4cb7839cd3741b63733d5adf0442, type: 3}
+  m_Name: OscPoser Camera Expression Parameters
+  m_EditorClassIdentifier: 
+  isEmpty: 0
+  parameters:
+  - name: OscPoser/Camera/X
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Camera/Y
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Camera/Z
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Camera/Yaw
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Camera/Pitch
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Camera/Roll
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Camera/Fov
+    valueType: 1
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0
+  - name: OscPoser/Camera/isEnable
+    valueType: 2
+    saved: 0
+    defaultValue: 0
+    networkSynced: 0
+    bitWidth: 8
+    useCustomLerpDuration: 0
+    customLerpDuration: 0
+    flippedRepresentation: 0

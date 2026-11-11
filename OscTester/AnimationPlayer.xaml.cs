@@ -24,6 +24,8 @@ public partial class AnimationPlayer : UserControl
     private FacePose? pose;
     private HumanoidPose? humanoidPose;
     private float[]? humanoidFrame;
+    private CameraPose? cameraPose;
+    private CameraOutputFrame? cameraFrame;
     private MediaPlayer? media;
     private bool audioReady;
     private bool playbackActive;
@@ -31,6 +33,7 @@ public partial class AnimationPlayer : UserControl
 
     internal event Action<byte[], int[]>? PoseChanged;
     internal float[]? HumanoidFrame => Volatile.Read(ref humanoidFrame);
+    internal CameraOutputFrame? CameraFrame => Volatile.Read(ref cameraFrame);
 
     public AnimationPlayer()
     {
@@ -43,6 +46,7 @@ public partial class AnimationPlayer : UserControl
         loading?.Cancel();
         playbackActive = false;
         PublishHumanoidFrame(position);
+        Volatile.Write(ref cameraFrame, null);
         timer.Stop();
         media?.Close();
         import?.Dispose();
@@ -58,6 +62,11 @@ public partial class AnimationPlayer : UserControl
         Browse(AudioPath, "Audio (*.wav;*.ogg;*.mp3)|*.wav;*.ogg;*.mp3");
 
     private void ClearAudio_Click(object sender, RoutedEventArgs e) => AudioPath.Clear();
+
+    private void BrowseCamera_Click(object sender, RoutedEventArgs e) =>
+        Browse(CameraPath, "Unity camera AnimationClip (*.anim)|*.anim");
+
+    private void ClearCamera_Click(object sender, RoutedEventArgs e) => CameraPath.Clear();
 
     private void Browse(TextBox path, string filter)
     {
@@ -82,6 +91,7 @@ public partial class AnimationPlayer : UserControl
         }
 
         string? audioFile = string.IsNullOrWhiteSpace(AudioPath.Text) ? null : AudioPath.Text;
+        string? cameraFile = !bundle && !string.IsNullOrWhiteSpace(CameraPath.Text) ? CameraPath.Text : null;
         Pause();
         using var request = new CancellationTokenSource();
         loading = request;
@@ -105,6 +115,27 @@ public partial class AnimationPlayer : UserControl
             }
 
             var mapped = new FacePose(selected);
+            FaceClip? selectedCamera = selected.Camera is not null ? selected : null;
+            string cameraUnavailable = "No supported camera tracks in this clip.";
+            if (cameraFile is not null)
+            {
+                ImportStatus.Text = "Reading camera animation…";
+                using var cameraImport = new AnimationImport();
+                await Task.Run(() => cameraImport.ReadAsync(cameraFile, false, request.Token, standaloneCamera: true),
+                    request.Token);
+                selectedCamera = cameraImport.Clips.FirstOrDefault(item => item.Camera is not null);
+                cameraUnavailable = "No supported camera tracks in the selected camera file.";
+            }
+            else if (bundle && selectedCamera is null)
+            {
+                var candidates = work.Clips.Where(item => item.Camera is not null).ToArray();
+                selectedCamera = Choose("Choose camera clip", "Which camera track should accompany the animation?",
+                    candidates, item => $"{item.Name}   •   {FormatTime(item.Duration)}", "Use selected camera",
+                    "Play without camera");
+                cameraUnavailable = candidates.Length == 0
+                    ? "No supported camera tracks in this bundle." : "No camera clip selected.";
+            }
+
             BundleAudio? selectedAudio = bundle
                 ? Choose("Choose embedded audio", "Which AudioClip should accompany the animation?",
                     work.AudioCandidates(selected), item => item.Name, "Use selected audio", "Play without audio")
@@ -129,6 +160,12 @@ public partial class AnimationPlayer : UserControl
             clip = selected;
             pose = mapped;
             humanoidPose = new HumanoidPose(selected);
+            cameraPose = selectedCamera?.Camera is CameraTrack track ? new CameraPose(selectedCamera, track) : null;
+            if (cameraPose is null)
+            {
+                SendCameraPose.IsChecked = false;
+                CameraInfo.Text = cameraUnavailable;
+            }
             playbackActive = false;
             HumanoidInfo.Text = humanoidPose.HasTracks
                 ? $"{humanoidPose.MuscleCount}/{HumanoidChannels.MuscleCount} muscle tracks"
@@ -138,7 +175,7 @@ public partial class AnimationPlayer : UserControl
                 : $"{mapped.TrackCount} of {selected.Curves.Count} face tracks mapped";
             ClipInfo.Text = $"{selected.Name}   •   {selected.FrameRate:0.###} fps   •   {mapping}";
             ClipInfo.ToolTip = ClipInfo.Text;
-            ImportStatus.Text = mapped.TrackCount == 0
+            ImportStatus.Text = mapped.TrackCount == 0 && !humanoidPose.HasTracks && cameraPose is null
                 ? "No supported face curves. If this is an AssetRipper export with merged bindings, load the original bundle."
                 : "Ready";
             AudioStatus.Text = audio.Warning ?? "Opening audio…";
@@ -229,6 +266,7 @@ public partial class AnimationPlayer : UserControl
             Seek(0);
         playbackActive = true;
         PublishHumanoidFrame(position);
+        PublishCameraFrame(position);
         clock.Start();
         SyncAudio();
         timer.Start();
@@ -349,9 +387,26 @@ public partial class AnimationPlayer : UserControl
         pose.Evaluate(time, values);
         PoseChanged?.Invoke(values, pose.Channels);
         PublishHumanoidFrame(time);
+        PublishCameraFrame(time);
     }
 
     private void SendHumanoidPose_Changed(object sender, RoutedEventArgs e) => PublishHumanoidFrame(CurrentTime());
+
+    private void CameraOption_Changed(object sender, RoutedEventArgs e) => PublishCameraFrame(CurrentTime());
+
+    private void PublishCameraFrame(double time)
+    {
+        CameraOutputFrame? frame = null;
+        if (cameraPose is not null)
+        {
+            bool limited = false;
+            if (SendCameraPose.IsChecked == true)
+                frame = new CameraOutputFrame(
+                    cameraPose.Evaluate(time, FlipCameraDirection.IsChecked == true, out limited), playbackActive);
+            CameraInfo.Text = limited ? $"{cameraPose.Name} • exceeds rig range" : cameraPose.Name;
+        }
+        Volatile.Write(ref cameraFrame, frame);
+    }
 
     private void PublishHumanoidFrame(double time)
     {
@@ -370,6 +425,7 @@ public partial class AnimationPlayer : UserControl
         StopButton.IsEnabled = ready;
         StepButton.IsEnabled = ready && !clock.IsRunning && CurrentFrame() < clip!.LastFrame;
         FrameInput.IsReadOnly = !ready || clock.IsRunning;
+        SendCameraPose.IsEnabled = FlipCameraDirection.IsEnabled = ready && cameraPose is not null;
     }
 
     private void ReportError(string message)

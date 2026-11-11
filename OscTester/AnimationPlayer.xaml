@@ -30,10 +30,15 @@
                             <Button DockPanel.Dock="Left" MinWidth="132" Content="Browse .anim…" Click="BrowseClip_Click" />
                             <TextBox x:Name="ClipPath" IsReadOnly="True" AutomationProperties.Name="Selected AnimationClip" />
                         </DockPanel>
-                        <DockPanel>
+                        <DockPanel Margin="0,0,0,6">
                             <Button DockPanel.Dock="Left" MinWidth="132" Content="Browse audio…" Click="BrowseAudio_Click" />
                             <Button DockPanel.Dock="Right" Content="Clear" Margin="8,0,0,0" Click="ClearAudio_Click" />
                             <TextBox x:Name="AudioPath" IsReadOnly="True" AutomationProperties.Name="Optional audio path" />
+                        </DockPanel>
+                        <DockPanel>
+                            <Button DockPanel.Dock="Left" MinWidth="132" Content="Browse camera…" Click="BrowseCamera_Click" />
+                            <Button DockPanel.Dock="Right" Content="Clear" Margin="8,0,0,0" Click="ClearCamera_Click" />
+                            <TextBox x:Name="CameraPath" IsReadOnly="True" AutomationProperties.Name="Optional camera AnimationClip" />
                         </DockPanel>
                     </StackPanel>
                 </TabItem>
@@ -56,6 +61,15 @@
                 <CheckBox x:Name="SendHumanoidPose" Content="Send humanoid pose data"
                           Checked="SendHumanoidPose_Changed" Unchecked="SendHumanoidPose_Changed" />
                 <TextBlock x:Name="HumanoidInfo" Foreground="#4B6078" FontSize="12" Margin="12,0,0,0" />
+            </WrapPanel>
+            <WrapPanel Margin="0,8,0,0">
+                <CheckBox x:Name="SendCameraPose" Content="Send camera pose over OSC" IsEnabled="False"
+                          Checked="CameraOption_Changed" Unchecked="CameraOption_Changed" />
+                <CheckBox x:Name="FlipCameraDirection" Content="Flip camera direction" IsEnabled="False" Margin="12,0,0,0"
+                          ToolTip="Reverse local Z and reflect the camera's aim and roll."
+                          Checked="CameraOption_Changed" Unchecked="CameraOption_Changed" />
+                <TextBlock x:Name="CameraInfo" Foreground="#4B6078" FontSize="12" Margin="12,0,0,0"
+                           Text="Load a clip with camera tracks to enable this option." TextWrapping="Wrap" />
             </WrapPanel>
             <WrapPanel Margin="0,8,0,0">
                 <StackPanel Margin="0,0,24,0" MinWidth="170">

@@ -8,14 +8,15 @@ internal sealed record BundleAudio(string Name, string Source, long Offset, long
 
 internal static partial class UnityBinaryDump
 {
-    public static void Read(string dump, string member, List<FaceClip> clips, List<BundleAudio> audio)
+    public static void Read(string dump, string member, List<FaceClip> clips, List<BundleAudio> audio,
+        bool standaloneCamera = false)
     {
         var lines = new List<string>();
         int classId = 0;
         void Finish()
         {
             if (classId == 74)
-                clips.Add(ReadClip(lines));
+                clips.Add(ReadClip(lines, standaloneCamera));
             else if (classId == 83)
                 audio.Add(ReadAudio(lines, member));
             lines.Clear();
@@ -54,7 +55,7 @@ internal static partial class UnityBinaryDump
         return new BundleAudio(name, source, offset, size, subsound, member);
     }
 
-    private static FaceClip ReadClip(List<string> lines)
+    private static FaceClip ReadClip(List<string> lines, bool standaloneCamera)
     {
         const uint bodyPath = 0x7B9AA48C;
         var streamed = new List<uint>();
@@ -63,6 +64,7 @@ internal static partial class UnityBinaryDump
         var bindings = new List<Binding>();
         var curves = new Dictionary<string, FaceCurve>(StringComparer.Ordinal);
         var humanoid = new Dictionary<int, FaceCurve>();
+        var camera = new CameraTrackBuilder();
         var section = Section.None;
         int sectionIndent = 0, streamCount = 0, denseCount = 0, denseFrames = 0;
         double frameRate = 0, denseRate = 0, denseStart = 0, start = 0, stop = 0, lastTime = 0;
@@ -87,6 +89,7 @@ internal static partial class UnityBinaryDump
         {
             FinishKey();
             UnityAnimationText.AddNamedCurve(attributeName, explicitClass, explicitPath, points, curves, humanoid);
+            camera.AddNamed(explicitPath, explicitClass, attributeName, points);
             points.Clear();
             attributeName = "";
             explicitPath = "";
@@ -205,18 +208,32 @@ internal static partial class UnityBinaryDump
         }
         FinishCurve();
 
-        var tracks = new Dictionary<int, (Binding Binding, List<FaceKey> Keys)>();
+        var tracks = new Dictionary<int, (Binding Binding, List<FaceKey> Keys, CameraProperty? Camera, int Component)>();
+        var lenses = bindings.Where(item => CameraTrackBuilder.IsFieldOfView(item.Type, item.Attribute))
+            .Select(item => item.Path).ToHashSet();
         int channel = 0;
         foreach (Binding item in bindings)
         {
-            if (item.Type == 137 && item.CustomType == 20 || IsHumanoidBinding(item))
-                tracks.Add(channel, (item, []));
-            channel += item.Type is 4 or 224
+            int size = item.Type is 4 or 224
                 ? item.Attribute switch { 2 => 4, 1 or 3 or 4 => 3, _ => 1 }
                 : 1;
+            CameraProperty? cameraProperty = CameraTrackBuilder.IsFieldOfView(item.Type, item.Attribute)
+                ? CameraProperty.FieldOfView
+                : item.Type == 4 && (CameraTrackBuilder.IsMmdPath(item.Path) || lenses.Contains(item.Path)
+                    || standaloneCamera && item.Path == 0)
+                    ? CameraTrackBuilder.TransformProperty(item.Attribute) : null;
+            if (cameraProperty is not null)
+            {
+                for (int component = 0; component < size; component++)
+                    tracks.Add(channel + component, (item, [], cameraProperty, component));
+            }
+            else if (item.Type == 137 && item.CustomType == 20 || IsHumanoidBinding(item))
+                tracks.Add(channel, (item, [], null, 0));
+            channel += size;
         }
         if (tracks.Count == 0)
-            return UnityAnimationText.CreateClip(name, frameRate, start, stop, lastTime, curves, humanoid);
+            return UnityAnimationText.CreateClip(name, frameRate, start, stop, lastTime, curves, humanoid)
+                with { Camera = camera.Build(standaloneCamera) };
 
         // Unity stores a time and key count, then an index and four polynomial coefficients per key.
         for (int cursor = 0; cursor < streamed.Count;)
@@ -259,13 +276,16 @@ internal static partial class UnityBinaryDump
             if (curve.KeyCount > 0)
             {
                 lastTime = Math.Max(lastTime, curve.LastTime);
-                if (IsHumanoidBinding(track.Binding))
+                if (track.Camera is CameraProperty property)
+                    camera.Add(track.Binding.Path, property, track.Component, curve);
+                else if (IsHumanoidBinding(track.Binding))
                     humanoid.TryAdd((int)track.Binding.Attribute, curve);
                 else
                     curves.TryAdd(FaceMorphs.NameForHash(track.Binding.Attribute), curve);
             }
         }
-        return UnityAnimationText.CreateClip(name, frameRate, start, stop, lastTime, curves, humanoid);
+        return UnityAnimationText.CreateClip(name, frameRate, start, stop, lastTime, curves, humanoid)
+            with { Camera = camera.Build(standaloneCamera) };
     }
 
     private static bool IsHumanoidBinding(Binding binding) => binding.Type == 95 && binding.CustomType == 8

@@ -2,6 +2,8 @@
 
 Use this Windows app to exercise native face tracking on a VRChat avatar without a tracking headset.
 
+**New in v1.1.** Play MMD camera tracks over OSC from a Unity3D bundle or a separate Unity camera clip. The camera rig included in `OscPoser.unitypackage` can display the shot fullscreen for the local Desktop user during playback.
+
 1. Enable **OSC** in VRChat and load an avatar set up for **VRChat native face tracking**, with **Face Tracking** and **Use All Tracking Keys** enabled on its Avatar Descriptor. This setup is required for facial expressions from both the sliders and the animation player. [VRChat native face tracking setup](https://creators.vrchat.com/avatars/face-tracking/)
 2. Download `VRChatFaceTrackingOscTester.exe` from the GitHub release and run it. The app requires the .NET 8 Desktop Runtime.
 3. Click **Start streaming** and adjust a slider or type a whole number from 0 to 255. **Quick test** provides **EyeClosedRight**, **EyeClosedLeft**, and **JawOpen**. **Reset all to 0** clears all groups.
@@ -41,7 +43,7 @@ Enable **Send humanoid pose data** in the Animation player and start OSC streami
 
 Use the tester and `OscPoser` Unity assets from the same release. The full-body rotation channels and muscle encoding require matching versions.
 
-Download `OscPoser.unitypackage` from the matching GitHub release and import it in your VRChat avatar project through **Assets → Import Package → Custom Package**. Keep the Action controller and Expression Parameters asset selected. Select only the prefab for your chosen installer, or deselect both prefabs for a manual install. If you are working from source, copy the corresponding files and their `.meta` files from the [OscPoser folder](OscPoser/) into `Assets/OscPoser`.
+Download `OscPoser.unitypackage` from the matching GitHub release and import it in your VRChat avatar project through **Assets → Import Package → Custom Package**. Keep the Action controller and Expression Parameters asset selected. Select only the body prefab for your chosen installer, or deselect both body prefabs for a manual install. The camera assets are in a separate **Camera** folder and can be installed independently. If you are working from source, copy the corresponding files and their `.meta` files from the [OscPoser folder](OscPoser/) into `Assets/OscPoser`.
 
 #### Install OscPoser
 
@@ -65,6 +67,28 @@ The controller has an empty **Base Layer** and an **OscPoser** layer. Entry goes
 The controller embeds its blend trees and clips. For example, `OscPoser/Muscle14` drives **Head Turn Left-Right**, and `OscPoser/Muscle55` drives **Left Thumb 1 Stretched**. The travel and body orientation channels drive baked humanoid root curves on the avatar Animator. Unity scales translation to the avatar. The offsets move the avatar model around its playback origin while the VRChat player capsule stays at that origin.
 
 The reader uses named Animator curves in text `.anim` files and humanoid bindings in modern binary clips and bundles. A clip without humanoid tracks keeps the gate off. Step and frame seek update the held pose when paused. Seeking before **Play** leaves the gate off.
+
+### Send camera pose over OSC
+
+Install one camera rig from `Assets/OscPoser/Camera` directly under the avatar root.
+
+When importing the package, keep **OscPoser Camera.prefab** and the shared camera assets selected. Deselect the camera installer prefab for any plugin you do not use.
+
+- **VRCFury.** Use **OscPoser Camera VRCFury.prefab**. It merges the camera controller into **FX** and adds the camera expression parameters.
+- **Modular Avatar.** Use **OscPoser Camera Modular Avatar.prefab**. It merges the camera controller into **FX** and adds the local camera expression parameters.
+- **Manual.** Use **OscPoser Camera.prefab** and keep its root named `OscPoser Camera`. Assign **OscPoser Camera FX Manual** to **FX** on the Avatar Descriptor, or merge its layers and Animator parameters into your existing FX controller. Add the entries from **OscPoser Camera Expression Parameters** to the avatar's Expression Parameters asset.
+
+If the fullscreen display is culled on an avatar with a different height, align the **Desktop Display** child's position to that avatar's **View Position**. Keep the camera rig root at its prefab position so it matches the OSC translation offsets.
+
+Enable **Send camera pose over OSC** after loading a bundle with a supported camera track. In **Manual files**, **Browse camera** lets you supply a separate Unity camera `.anim`; leave it empty to use camera curves in the main clip. The player samples the camera on the animation timeline, including while seeking or stepping. The checkbox is disabled when the player has no supported camera track.
+
+Use **Flip camera direction** when the shot appears on the wrong side of the avatar. It reverses the camera's local Z position and reflects its aim and roll to match. The change takes effect at the current frame, including while paused.
+
+Camera output requires a matching avatar camera rig that accepts the seven local float parameters under `/avatar/parameters/OscPoser/Camera/`. For `X`, `Y`, and `Z`, values from −1 to +1 represent offsets of up to 100 m from the neutral position of (0, 1.2, 2.65). `Yaw` and `Roll` span −180° to +180° with blend tree points every 90°, and `Pitch` spans −90° to +90°. `Fov` maps −1, 0, and +1 to 1°, 38°, and 179° respectively. The Unity rig renders to its own RenderTexture. The player flags and clamps samples outside the rig's range.
+
+The local OSC bool `OscPoser/Camera/isEnable` turns on when you press **Play** with **Send camera pose over OSC** checked. **Pause** keeps the current view active. **Stop**, the end of the clip, clearing the checkbox, and stopping OSC streaming turn it off.
+
+The packaged rig uses the [OscPoser desktop camera shader](OscPoser/Camera/OscPoserDesktopCamera.shader) to display the RenderTexture fullscreen for the local Desktop user. VR mode uses the RenderTexture without the fullscreen overlay. When the gate is off, the capture camera and display GameObjects are both inactive.
 
 ## Convert MMD animations
 

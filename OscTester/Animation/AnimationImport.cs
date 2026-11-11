@@ -20,11 +20,11 @@ internal sealed class AnimationImport : IDisposable
         return matches.Length > 0 ? matches : audio;
     }
 
-    public async Task ReadAsync(string path, bool bundle, CancellationToken cancellation)
+    public async Task ReadAsync(string path, bool bundle, CancellationToken cancellation, bool standaloneCamera = false)
     {
         if (!bundle && IsYaml(path))
         {
-            clips.Add(UnityAnimationText.ReadYaml(path));
+            clips.Add(UnityAnimationText.ReadYaml(path, standaloneCamera));
             return;
         }
 
@@ -51,7 +51,7 @@ internal sealed class AnimationImport : IDisposable
                 .ConfigureAwait(false);
             if (!File.Exists(dump))
                 throw new InvalidDataException($"Unity could not read {Path.GetFileName(member)}.");
-            UnityBinaryDump.Read(dump, member, clips, audio);
+            UnityBinaryDump.Read(dump, member, clips, audio, standaloneCamera);
             File.Delete(dump);
         }
         if (clips.Count == 0)

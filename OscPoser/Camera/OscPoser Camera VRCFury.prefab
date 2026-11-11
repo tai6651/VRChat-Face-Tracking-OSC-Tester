@@ -1,0 +1,166 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &2020740199789760114
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4667882007184453553, guid: 84ce418a6aa0377478ee4c56245a61b4,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4667882007184453553, guid: 84ce418a6aa0377478ee4c56245a61b4,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4667882007184453553, guid: 84ce418a6aa0377478ee4c56245a61b4,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 2.65
+      objectReference: {fileID: 0}
+    - target: {fileID: 4667882007184453553, guid: 84ce418a6aa0377478ee4c56245a61b4,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4667882007184453553, guid: 84ce418a6aa0377478ee4c56245a61b4,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4667882007184453553, guid: 84ce418a6aa0377478ee4c56245a61b4,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4667882007184453553, guid: 84ce418a6aa0377478ee4c56245a61b4,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4667882007184453553, guid: 84ce418a6aa0377478ee4c56245a61b4,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4667882007184453553, guid: 84ce418a6aa0377478ee4c56245a61b4,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4667882007184453553, guid: 84ce418a6aa0377478ee4c56245a61b4,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5781199212839268627, guid: 84ce418a6aa0377478ee4c56245a61b4,
+        type: 3}
+      propertyPath: m_Name
+      value: OscPoser Camera VRCFury
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 5781199212839268627, guid: 84ce418a6aa0377478ee4c56245a61b4,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3339836195478286992}
+  m_SourcePrefab: {fileID: 100100000, guid: 84ce418a6aa0377478ee4c56245a61b4, type: 3}
+--- !u!1 &5490431708201189217 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5781199212839268627, guid: 84ce418a6aa0377478ee4c56245a61b4,
+    type: 3}
+  m_PrefabInstance: {fileID: 2020740199789760114}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &3339836195478286992
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5490431708201189217}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d9e94e501a2d4c95bff3d5601013d923, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 3
+  unityVersion: 2022.3.22f1
+  vrcfuryVersion: 1.1442.0
+  somethingIsBroken: 0
+  config:
+    features: []
+  content:
+    rid: 3689070679975526400
+  references:
+    version: 2
+    RefIds:
+    - rid: 3689070679975526400
+      type: {class: FullController, ns: VF.Model.Feature, asm: VRCFury}
+      data:
+        version: 4
+        controllers:
+        - controller:
+            version: 1
+            fileID: 0
+            guid: 
+            id: 0d243385ff37f2f4cbb846c28d75907f|Assets/OscPoser Camera Release Staging
+              mwc4zvu5/OscPoser Camera FX.controller
+            objRef: {fileID: 9100000, guid: 0d243385ff37f2f4cbb846c28d75907f, type: 2}
+          type: 5
+        menus: []
+        prms:
+        - parameters:
+            version: 1
+            fileID: 0
+            guid: 
+            id: 8e89f120e85601b4ca0b84e0db3abf34|Assets/OscPoser Camera Release Staging
+              mwc4zvu5/OscPoser Camera Expression Parameters.asset
+            objRef: {fileID: 11400000, guid: 8e89f120e85601b4ca0b84e0db3abf34, type: 2}
+        smoothedPrms: []
+        globalParams:
+        - OscPoser/Camera/*
+        allNonsyncedAreGlobal: 0
+        ignoreSaved: 0
+        toggleParam: 
+        rootObjOverride: {fileID: 0}
+        rootBindingsApplyToAvatar: 0
+        overwriteLocomotion: 1
+        rewriteBindings: []
+        allowMissingAssets: 0
+        injectParams: []
+        faceTrackingMeshes: []
+        faceTrackingBlendshapeSets: []
+        faceTrackingParameterBehaviors: []
+        visemeDampenMode: 0
+        visemeDampenAmount: 1
+        injectSpsDepthParam: 
+        injectSpsVelocityParam: 
+        controller:
+          version: 1
+          fileID: 0
+          guid: 
+          id: 
+          objRef: {fileID: 0}
+        menu:
+          version: 1
+          fileID: 0
+          guid: 
+          id: 
+          objRef: {fileID: 0}
+        parameters:
+          version: 1
+          fileID: 0
+          guid: 
+          id: 
+          objRef: {fileID: 0}
+        submenu: 
+        removePrefixes: []
+        addPrefix: 
+        useSecurityForToggle: 0

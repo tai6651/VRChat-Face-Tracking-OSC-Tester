@@ -2,8 +2,8 @@
 
 Use this Windows app to exercise native face tracking on a VRChat avatar without a tracking headset.
 
-1. Enable **OSC** in VRChat and load an avatar with **Face Tracking** and **Use All Tracking Keys** enabled.
-2. Run `VRChatFaceTrackingOscTester.exe` from the release folder. The release uses the .NET 8 Desktop Runtime.
+1. Enable **OSC** in VRChat and load an avatar set up for **VRChat native face tracking**, with **Face Tracking** and **Use All Tracking Keys** enabled on its Avatar Descriptor. This setup is required for facial expressions from both the sliders and the animation player. [VRChat native face tracking setup](https://creators.vrchat.com/avatars/face-tracking/)
+2. Download `VRChatFaceTrackingOscTester.exe` from the GitHub release and run it. The app requires the .NET 8 Desktop Runtime.
 3. Click **Start streaming** and adjust a slider or type a whole number from 0 to 255. **Quick test** provides **EyeClosedRight**, **EyeClosedLeft**, and **JawOpen**. **Reset all to 0** clears all groups.
 
 ![Tracking keys tab streaming a jaw-open pose to a VRChat avatar](doc/screenshot_01.jpg)
@@ -29,6 +29,8 @@ The app sends all 102 Unified Expressions keys in a single `/tracking/face/v1` O
 
 ![Animation player tab playing a Unity3D bundle with audio and showing the current time and frame](doc/screenshot_02.jpg)
 
+[Watch a sample animation played in VRChat on X](https://x.com/minddragon/status/2120189197143388207)
+
 The player uses the clip's sample rate and duration. It converts MMD blink, wink, pupil, mouth, and other supported facial morphs into native tracking keys. The mouth shapes are approximations built from jaw and lip controls. Unmapped curves are excluded and the app reports how many face curves it mapped. If an exported `.anim` has merged or placeholder blendshape bindings, load the original bundle to recover the separate hashed tracks.
 
 Bundle import, binary `.anim` files, and Ogg audio use the command-line tools that ship with Unity Editor. The app detects standard Unity Hub installations. For a custom install, set the `OSC_TESTER_UNITY_TOOLS` environment variable to the editor's `Editor\Data\Tools` directory before starting the tester. Text `.anim` clips with WAV or MP3 audio can be opened directly.
@@ -39,12 +41,17 @@ Enable **Send humanoid pose data** in the Animation player and start OSC streami
 
 Use the tester and `OscPoser` Unity assets from the same release. The full-body rotation channels and muscle encoding require matching versions.
 
-Copy the [OscPoser folder](OscPoser/) into your VRChat Unity project's `Assets` directory. Use one installation method per avatar.
+Download `OscPoser.unitypackage` from the matching GitHub release and import it in your VRChat avatar project through **Assets → Import Package → Custom Package**. Keep the Action controller and Expression Parameters asset selected. Select only the prefab for your chosen installer, or deselect both prefabs for a manual install. If you are working from source, copy the corresponding files and their `.meta` files from the [OscPoser folder](OscPoser/) into `Assets/OscPoser`.
 
-- **VRCFury**. Drag **OscPoser.prefab** directly under the avatar root. Its Full Controller component merges the Action controller and expression parameters during the avatar build and preserves the `OscPoser/` parameter names. [VRCFury Full Controller](https://vrcfury.com/components/full-controller/)
-- **Manual**. Assign **OscPoser Action** to **Playable Layers → Action** on the avatar descriptor. Merge the entries from **OscPoser Expression Parameters** into the avatar's existing Expression Parameters asset.
+#### Install OscPoser
 
-The supplied entries are unsynced, unsaved, and default to zero. The OSC address is `/avatar/parameters/` followed by the complete, case-sensitive parameter name.
+Use one installation method per avatar.
+
+1. **Manual.** On the VRChat Avatar Descriptor, open **Playable Layers**, click **Customize**, and assign **OscPoser Action** to **Action**. Under **Expressions**, assign **OscPoser Expression Parameters** if the avatar has no custom parameter asset. If the avatar already uses one, add the supplied OscPoser entries to that asset and retain the existing entries. Assigning the Action controller directly replaces the controller in that slot. Use a prefab method to merge into an existing custom Action controller.
+2. **VRCFury.** Install VRCFury, then drag **OscPoser.prefab** directly under the avatar root. Its Full Controller component merges the controller into **Action** and adds the expression parameters during the avatar build. [VRCFury Full Controller](https://vrcfury.com/components/full-controller/)
+3. **Modular Avatar.** Install Modular Avatar, then drag **OscPoser Modular Avatar.prefab** directly under the avatar root. **MA Merge Animator** appends the controller to **Action**, and **MA Parameters** adds the local expression parameters during the avatar build. [Modular Avatar Merge Animator](https://modular-avatar.nadena.dev/docs/reference/merge-animator)
+
+The supplied entries are unsynced and unsaved. They default to zero, except for `OscPoser/BodyQW`, which defaults to one for the identity rotation. The OSC address is `/avatar/parameters/` followed by the complete, case-sensitive parameter name.
 
 | Parameter | Type | Value |
 | --- | --- | --- |
@@ -76,3 +83,7 @@ Open `VRChatFaceTrackingOscTester.sln` in Visual Studio 2022 with the **.NET des
 - [Unity humanoid muscle names](https://docs.unity3d.com/2022.3/Documentation/ScriptReference/HumanTrait.MuscleName.html)
 - [VRCFaceTracking](https://github.com/benaclejames/VRCFaceTracking)
 - [Unity asset archive tools](https://docs.unity.com/en-us/engine/6000.3/manual/assets-and-media/assets-optimizing/assets-analyze-built-assets)
+
+## Credits
+
+This open-source application was developed with help from [OpenAI Codex](https://openai.com/codex/).

@@ -8,5 +8,9 @@
     <AssemblyName>VRChatFaceTrackingOscTester</AssemblyName>
     <RootNamespace>OscTester</RootNamespace>
     <Product>VRChat Face Tracking OSC Tester</Product>
+    <ApplicationIcon>AppIcon.ico</ApplicationIcon>
   </PropertyGroup>
+  <ItemGroup>
+    <Resource Include="AppIcon.ico" />
+  </ItemGroup>
 </Project>

@@ -59,9 +59,15 @@
             </WrapPanel>
             <WrapPanel Margin="0,8,0,0">
                 <CheckBox x:Name="SendHumanoidPose" Content="Send humanoid pose data"
-                          Checked="SendHumanoidPose_Changed" Unchecked="SendHumanoidPose_Changed" />
+                          Checked="BodyOutputOption_Changed" Unchecked="BodyOutputOption_Changed" />
                 <TextBlock x:Name="HumanoidInfo" Foreground="#4B6078" FontSize="12" Margin="12,0,0,0" />
             </WrapPanel>
+            <StackPanel Margin="0,8,0,0">
+                <CheckBox x:Name="SendMmdAnywhere" Content="Send MMD Anywhere packet instead of face tracking data"
+                          Checked="BodyOutputOption_Changed" Unchecked="BodyOutputOption_Changed" />
+                <TextBlock x:Name="MmdAnywhereInfo" Foreground="#4B6078" FontSize="12" Margin="0,3,0,0"
+                           Visibility="Collapsed" TextWrapping="Wrap" />
+            </StackPanel>
             <WrapPanel Margin="0,8,0,0">
                 <CheckBox x:Name="SendCameraPose" Content="Send camera pose over OSC" IsEnabled="False"
                           Checked="CameraOption_Changed" Unchecked="CameraOption_Changed" />

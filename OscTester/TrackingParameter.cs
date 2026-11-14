@@ -4,13 +4,18 @@ using System.Runtime.CompilerServices;
 
 namespace OscTester;
 
-internal sealed class TrackingParameter(int index, Action<int, byte> onChange) : INotifyPropertyChanged
+internal sealed class TrackingParameter(int index, Action<int, byte>? onChange, string? displayName = null,
+    string? description = null) : INotifyPropertyChanged
 {
     private byte value;
     private string valueText = "0";
     private bool hasInvalidValue;
 
-    public string Name => TrackingKeys.Names[index];
+    public int Index => index;
+    public string Name => displayName ?? TrackingKeys.Names[index];
+    public string? Description => description;
+    public bool IsEditable => onChange is not null;
+    public bool IsReadOnly => !IsEditable;
     public bool IsFeatured => Name is "EyeClosedRight" or "EyeClosedLeft" or "JawOpen";
 
     public int Value
@@ -18,6 +23,8 @@ internal sealed class TrackingParameter(int index, Action<int, byte> onChange) :
         get => value;
         set
         {
+            if (IsReadOnly)
+                return;
             SetValue((byte)value);
             ValueText = value.ToString(CultureInfo.InvariantCulture);
         }
@@ -28,7 +35,7 @@ internal sealed class TrackingParameter(int index, Action<int, byte> onChange) :
         get => valueText;
         set
         {
-            if (valueText == value)
+            if (IsReadOnly || valueText == value)
                 return;
 
             valueText = value;
@@ -83,7 +90,7 @@ internal sealed class TrackingParameter(int index, Action<int, byte> onChange) :
             return;
 
         value = newValue;
-        onChange(index, value);
+        onChange?.Invoke(index, value);
         Notify(nameof(Value));
     }
 

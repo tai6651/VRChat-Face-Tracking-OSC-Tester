@@ -12,5 +12,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Resource Include="AppIcon.ico" />
+    <Compile Include="..\OscPoser\MmdAnywhere\Editor\MmdAnywhereLayout.cs" Link="Animation\MmdAnywhereLayout.cs" />
   </ItemGroup>
 </Project>

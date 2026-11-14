@@ -47,7 +47,7 @@
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="62" />
                     </Grid.ColumnDefinitions>
-                    <TextBlock Text="{Binding Name}" VerticalAlignment="Center">
+                    <TextBlock Text="{Binding Name}" ToolTip="{Binding Description}" VerticalAlignment="Center">
                         <TextBlock.Style>
                             <Style TargetType="TextBlock">
                                 <Style.Triggers>
@@ -63,14 +63,19 @@
                             SmallChange="1" LargeChange="16" IsSnapToTickEnabled="True"
                             IsMoveToPointEnabled="True" Margin="0,0,16,0" VerticalAlignment="Center"
                             AutomationProperties.Name="{Binding Name}"
+                            IsHitTestVisible="{Binding IsEditable}" Focusable="{Binding IsEditable}"
                             Value="{Binding Value, Mode=TwoWay}" />
                     <TextBox Grid.Column="2" TextAlignment="Right" FontFamily="Consolas"
+                             IsReadOnly="{Binding IsReadOnly}"
                              AutomationProperties.Name="{Binding Name, StringFormat='{}{0} value'}"
                              Text="{Binding ValueText, UpdateSourceTrigger=PropertyChanged}">
                         <TextBox.Style>
                             <Style TargetType="TextBox" BasedOn="{StaticResource Input}">
                                 <Setter Property="ToolTip" Value="Enter a whole number from 0 to 255." />
                                 <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsReadOnly}" Value="True">
+                                        <Setter Property="ToolTip" Value="Raw byte from the outgoing MMD Anywhere packet." />
+                                    </DataTrigger>
                                     <DataTrigger Binding="{Binding HasInvalidValue}" Value="True">
                                         <Setter Property="Background" Value="#FFF1F1" />
                                         <Setter Property="BorderBrush" Value="#B42328" />
@@ -197,11 +202,11 @@
         <Border Style="{StaticResource Card}" BorderThickness="0">
             <DockPanel>
                 <DockPanel DockPanel.Dock="Top" Margin="0,0,0,10">
-                    <Button DockPanel.Dock="Right" Content="Reset all to 0"
+                    <Button x:Name="ResetTrackingKeys" DockPanel.Dock="Right" Content="Reset all to 0"
                             Style="{StaticResource ActionButton}" Click="ResetAll_Click" />
                     <StackPanel>
-                        <TextBlock Text="Tracking keys" FontSize="18" FontWeight="SemiBold" />
-                        <TextBlock Text="102 keys  ·  Drag a slider or enter a whole number from 0 to 255."
+                        <TextBlock x:Name="TrackingHeading" Text="Tracking keys" FontSize="18" FontWeight="SemiBold" />
+                        <TextBlock x:Name="TrackingDescription" Text="102 keys  ·  Drag a slider or enter a whole number from 0 to 255."
                                    Foreground="{StaticResource Muted}" FontSize="12" Margin="0,3,0,0" />
                     </StackPanel>
                 </DockPanel>

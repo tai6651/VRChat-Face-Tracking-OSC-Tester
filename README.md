@@ -68,6 +68,36 @@ The controller embeds its blend trees and clips. For example, `OscPoser/Muscle14
 
 The reader uses named Animator curves in text `.anim` files and humanoid bindings in modern binary clips and bundles. A clip without humanoid tracks keeps the gate off. Step and frame seek update the held pose when paused. Seeking before **Play** leaves the gate off.
 
+### Test MMD Anywhere on a second client
+
+MMD Anywhere streams humanoid poses and supported facial curves from Unity3D bundles and Unity animation clips. Use VRChat Avatars SDK 3.10.6 or later and a matching sender and avatar controller.
+
+1. Copy the [MmdAnywhere folder](OscPoser/MmdAnywhere/) into your Unity project's `Assets/OscPoser`. Select the avatar root in a saved scene and choose **Tools → MMD Anywhere → Create Prototype Test Scene**. For an existing MMD Anywhere test scene, use **Update Test Scene for Full Dance**.
+2. Use **Build & Publish** on the test copy for the two-client test. The forwarded Animator floats give it a **Very Poor** rank, so explicitly show the avatar on the observing PC client if needed. Keep eye and mouth tracking set to **Tracking** in the Action state so VRChat continues to forward the native keys. [VRChat performance ranks](https://creators.vrchat.com/avatars/avatar-performance-ranking-system/#face-tracking)
+3. Wear the test avatar with OSC and face tracking enabled. Load a clip with humanoid or supported facial curves, check **Send MMD Anywhere packet instead of face tracking data**, start streaming, and press **Play**. The **Tracking keys** tab shows the outgoing byte values by group. **Pause**, seek, and **Step +1** update the held pose after playback starts. **Stop**, the end of the clip, clearing the checkbox, and stopping OSC streaming release the pose.
+4. On a second client, compare turns, travel, and facial movement nearby and farther away. Check that both clients return to tracking after **Stop**. Face tracking sync is lossy and its fidelity varies with distance. [VRChat face tracking networking](https://creators.vrchat.com/avatars/face-tracking/#networking-and-synced-parameters)
+
+| Zero-based OSC byte indices | Values |
+| --- | --- |
+| 62 + 98, 65, 80 + 99 | Root translation X, Y, Z, with a range of ±5 humanoid units per axis. X and Z use a coarse byte and a fine byte. |
+| 91–94 | Root quaternion X, Y, Z, W relative to the clip's starting heading. |
+| 1, 3, 5, 7, 9, 16, 17, 38, 88, 90 | Reserved zeros for coupled tracking keys. |
+| Remaining keys in ascending order | 76 muscle values, then seven face weights. The sender lists the actual OSC index next to each value. |
+
+The body encoder reserves values below 16, uses byte 128 for neutral, and skips bytes 127 and 129 so small rounding errors around neutral stay neutral. A missing native body value of zero decodes to neutral. A missing quaternion component resets the root rotation to identity. Facial weights use the full byte range.
+
+The 76 muscle values drive 88 Unity axes. Upper chest, jaw muscles, and toe axes are omitted. Both eyes share pitch and yaw, and the second and third curl joints of each finger share a value. Finger spread and the first curl joint keep individual channels. The seven face weights drive left and right eyelids, jaw opening, mouth stretch, mouth rounding, smile, and pupil constriction.
+
+Local and remote playback apply the decoded root position directly. Translation uses finer steps within ±1.25 humanoid units on X/Z and ±0.35 on Y, with a coarser range out to ±5. The X/Z fine byte carries a correction of up to half a coarse count in either direction. If the fine byte is missing, the axis uses the coarse value. The synced `MmdAnywhere/BodyStreamEnabled` bool controls playback. The 92 pose and face bytes still use native tracking. Update both the sender and the avatar together when changing the byte mapping.
+
+#### View root telemetry on a second client
+
+In the test scene, select the avatar and choose **Tools → MMD Anywhere → Install Root Telemetry Panel**. Save and publish the PC test avatar. Turn on **Expressions → MMD Root Debug** on the wearer. On the observing client, show the avatar and allow its custom shader if VRChat is hiding it.
+
+The seven **RX BYTE** rows show the native root values, rounded to the nearest byte for display. Red indicates a value below the sender's valid range. Cyan markers show the positions applied by Action. **Playback**, **Tracking**, and **Action** show the corresponding Animator conditions. The **Local** or **Remote** underline identifies the instance.
+
+Turn on **Expressions → MMD Raw Bytes** on the wearer to see all 102 received values by zero-based OSC index on both clients. It takes precedence over **MMD Root Debug**. Both panels start hidden, and each menu toggle costs one synced bit. To test a pair, clear **Send MMD Anywhere packet instead of face tracking data**, reset the native sliders, then set the two keys and read both cells on the observing client. [VRChat OSC key order](https://creators.vrchat.com/avatars/face-tracking/osc/#tracking-key-order)
+
 ### Send camera pose over OSC
 
 Install one camera rig from `Assets/OscPoser/Camera` directly under the avatar root.

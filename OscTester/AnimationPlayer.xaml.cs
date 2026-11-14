@@ -23,7 +23,9 @@ public partial class AnimationPlayer : UserControl
     private FaceClip? clip;
     private FacePose? pose;
     private HumanoidPose? humanoidPose;
-    private float[]? humanoidFrame;
+    private MmdAnywherePose? mmdAnywherePose;
+    private System.Numerics.Quaternion? mmdRotation;
+    private BodyOutputFrame bodyFrame = new(null, null, false);
     private CameraPose? cameraPose;
     private CameraOutputFrame? cameraFrame;
     private MediaPlayer? media;
@@ -32,7 +34,8 @@ public partial class AnimationPlayer : UserControl
     private double position;
 
     internal event Action<byte[], int[]>? PoseChanged;
-    internal float[]? HumanoidFrame => Volatile.Read(ref humanoidFrame);
+    internal event Action<byte[]?>? MmdAnywherePacketChanged;
+    internal BodyOutputFrame BodyFrame => Volatile.Read(ref bodyFrame);
     internal CameraOutputFrame? CameraFrame => Volatile.Read(ref cameraFrame);
 
     public AnimationPlayer()
@@ -45,7 +48,7 @@ public partial class AnimationPlayer : UserControl
     {
         loading?.Cancel();
         playbackActive = false;
-        PublishHumanoidFrame(position);
+        PublishBodyFrame(position);
         Volatile.Write(ref cameraFrame, null);
         timer.Stop();
         media?.Close();
@@ -160,6 +163,8 @@ public partial class AnimationPlayer : UserControl
             clip = selected;
             pose = mapped;
             humanoidPose = new HumanoidPose(selected);
+            mmdAnywherePose = humanoidPose.HasTracks || mapped.TrackCount > 0 ? new MmdAnywherePose(humanoidPose, mapped) : null;
+            mmdRotation = null;
             cameraPose = selectedCamera?.Camera is CameraTrack track ? new CameraPose(selectedCamera, track) : null;
             if (cameraPose is null)
             {
@@ -265,7 +270,7 @@ public partial class AnimationPlayer : UserControl
         if (position >= clip.Duration)
             Seek(0);
         playbackActive = true;
-        PublishHumanoidFrame(position);
+        PublishBodyFrame(position);
         PublishCameraFrame(position);
         clock.Start();
         SyncAudio();
@@ -386,11 +391,15 @@ public partial class AnimationPlayer : UserControl
         TotalFrames.Text = (clip.LastFrame + 1).ToString(CultureInfo.InvariantCulture);
         pose.Evaluate(time, values);
         PoseChanged?.Invoke(values, pose.Channels);
-        PublishHumanoidFrame(time);
+        PublishBodyFrame(time);
         PublishCameraFrame(time);
     }
 
-    private void SendHumanoidPose_Changed(object sender, RoutedEventArgs e) => PublishHumanoidFrame(CurrentTime());
+    private void BodyOutputOption_Changed(object sender, RoutedEventArgs e)
+    {
+        UpdateBodyOptions();
+        PublishBodyFrame(CurrentTime());
+    }
 
     private void CameraOption_Changed(object sender, RoutedEventArgs e) => PublishCameraFrame(CurrentTime());
 
@@ -408,13 +417,41 @@ public partial class AnimationPlayer : UserControl
         Volatile.Write(ref cameraFrame, frame);
     }
 
-    private void PublishHumanoidFrame(double time)
+    private void PublishBodyFrame(double time)
     {
-        float[]? frame = null;
+        if (SendMmdAnywhere?.IsChecked == true && mmdAnywherePose is not null)
+        {
+            var outgoing = MmdAnywherePose.IdlePacket;
+            if (playbackActive)
+            {
+                outgoing = mmdAnywherePose.Evaluate(time, mmdRotation, out var rotation);
+                mmdRotation = rotation;
+            }
+            else
+                mmdRotation = null;
+            Volatile.Write(ref bodyFrame, new BodyOutputFrame(null, outgoing, playbackActive));
+            MmdAnywherePacketChanged?.Invoke(outgoing);
+            return;
+        }
+
+        float[]? pose = null;
         if (SendHumanoidPose?.IsChecked == true)
-            frame = playbackActive && humanoidPose is { HasTracks: true }
-                ? humanoidPose.Evaluate(time) : [];
-        Volatile.Write(ref humanoidFrame, frame);
+            pose = playbackActive && humanoidPose is { HasTracks: true } ? humanoidPose.Evaluate(time) : [];
+        mmdRotation = null;
+        Volatile.Write(ref bodyFrame, new BodyOutputFrame(pose, null, false));
+        MmdAnywherePacketChanged?.Invoke(null);
+    }
+
+    private void UpdateBodyOptions()
+    {
+        bool anywhere = SendMmdAnywhere.IsChecked == true;
+        SendHumanoidPose.IsEnabled = !anywhere || mmdAnywherePose is null;
+        MmdAnywhereInfo.Visibility = anywhere ? Visibility.Visible : Visibility.Collapsed;
+        if (!anywhere)
+            return;
+        MmdAnywhereInfo.Text = mmdAnywherePose is null
+            ? "Load a clip with humanoid or supported face curves. Standard OSC output is active."
+            : "76 muscle values drive 88 axes, with 9 root and 7 face bytes. Playback uses one synced bool.";
     }
 
     private void SetTransport()
@@ -426,6 +463,7 @@ public partial class AnimationPlayer : UserControl
         StepButton.IsEnabled = ready && !clock.IsRunning && CurrentFrame() < clip!.LastFrame;
         FrameInput.IsReadOnly = !ready || clock.IsRunning;
         SendCameraPose.IsEnabled = FlipCameraDirection.IsEnabled = ready && cameraPose is not null;
+        UpdateBodyOptions();
     }
 
     private void ReportError(string message)

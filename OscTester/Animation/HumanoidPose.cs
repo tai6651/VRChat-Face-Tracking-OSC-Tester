@@ -126,21 +126,33 @@ internal sealed class HumanoidPose
     public bool HasRoot { get; }
     public bool HasTracks => MuscleCount != 0 || HasRoot;
 
-    public float[] Evaluate(double elapsed)
+    public float EvaluateMuscle(int index, double elapsed) =>
+        Normalize(Sample(muscles[index], start + elapsed) / MuscleRange);
+
+    public Quaternion EvaluateRotation(double elapsed) =>
+        Quaternion.Normalize(headingInverse * ReadRotation(start + elapsed));
+
+    public Vector3 EvaluateTranslation(double elapsed)
     {
         double time = start + elapsed;
-        var values = new float[HumanoidChannels.PoseSize];
-        for (int i = 0; i < muscles.Length; i++)
-            values[i] = Normalize(Sample(muscles[i], time) / MuscleRange);
-
-        int offset = HumanoidChannels.MuscleCount;
         double x = Sample(root[0], time) - initialX;
         double y = Sample(root[1], time) - verticalOrigin;
         double z = Sample(root[2], time) - initialZ;
-        values[offset] = Normalize((cos * x - sin * z) / TranslationRange);
-        values[offset + 1] = Normalize(y / TranslationRange);
-        values[offset + 2] = Normalize((sin * x + cos * z) / TranslationRange);
-        var bodyRotation = Quaternion.Normalize(headingInverse * ReadRotation(time));
+        return new Vector3((float)(cos * x - sin * z), (float)y, (float)(sin * x + cos * z));
+    }
+
+    public float[] Evaluate(double elapsed)
+    {
+        var values = new float[HumanoidChannels.PoseSize];
+        for (int i = 0; i < muscles.Length; i++)
+            values[i] = EvaluateMuscle(i, elapsed);
+
+        int offset = HumanoidChannels.MuscleCount;
+        var translation = EvaluateTranslation(elapsed);
+        values[offset] = Normalize(translation.X / TranslationRange);
+        values[offset + 1] = Normalize(translation.Y / TranslationRange);
+        values[offset + 2] = Normalize(translation.Z / TranslationRange);
+        var bodyRotation = EvaluateRotation(elapsed);
         // Equivalent quaternions q and -q use the hemisphere with a nonnegative W.
         float sign = bodyRotation.W < 0 ? -1 : 1;
         values[offset + 3] = Math.Max(0, sign * bodyRotation.X);

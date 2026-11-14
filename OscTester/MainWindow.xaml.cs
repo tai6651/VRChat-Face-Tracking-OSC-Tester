@@ -13,20 +13,26 @@ public partial class MainWindow : Window
 {
     private readonly byte[] values = new byte[OscPacket.FacePayloadSize];
     private readonly TrackingParameter[] parameters;
+    private readonly TrackingParameter[] mmdParameters;
+    private readonly ParameterGroup[] trackingGroups;
+    private readonly ParameterGroup[] mmdGroups;
     private readonly DispatcherTimer statusTimer = new() { Interval = TimeSpan.FromMilliseconds(250) };
     private byte[] packet;
     private OscSession? session;
     private long rateTimestamp;
     private long ratePacketCount;
     private double measuredRate;
+    private bool showingMmdPacket;
+    private int lastTrackingGroup;
+    private int lastMmdGroup;
 
     public MainWindow()
     {
         InitializeComponent();
         packet = OscPacket.CreateFacePacket(values);
         parameters = TrackingKeys.Names.Select((_, index) => new TrackingParameter(index, ChangeValue)).ToArray();
-        Groups.ItemsSource = new ParameterGroup[]
-        {
+        trackingGroups =
+        [
             new("Quick test", parameters.Where(parameter => parameter.IsFeatured).ToArray()),
             new("Eyes", parameters[..18]),
             new("Eyebrows", parameters[18..26]),
@@ -34,9 +40,32 @@ public partial class MainWindow : Window
             new("Jaw & mouth", [.. parameters[36..62], .. parameters[64..86]]),
             new("Tongue", parameters[86..98]),
             new("Throat & neck", parameters[98..])
-        };
+        ];
+        TrackingParameter MmdRow(int index, string name) => new(index, null, $"{index:D3}  {name}", TrackingKeys.Names[index]);
+        mmdGroups =
+        [
+            new("Muscles", MmdAnywhereLayout.MuscleCarriers.Select((muscle, i) =>
+                MmdRow(MmdAnywhereLayout.MuscleKey(i), muscle switch
+                {
+                    15 => "Both eyes · pitch",
+                    16 => "Both eyes · yaw",
+                    _ when Array.IndexOf(MmdAnywhereLayout.SharedCurlStarts, muscle) >= 0 =>
+                        HumanoidChannels.ParameterName(muscle) + " + " + HumanoidChannels.ParameterName(muscle + 1),
+                    _ => HumanoidChannels.ParameterName(muscle)
+                })).ToArray()),
+            new("Root",
+                [.. MmdAnywhereLayout.RootKeys.Select((key, i) => MmdRow(key,
+                    MmdAnywhereLayout.RootProperties[i] + (i is 0 or 2 ? " coarse" : ""))),
+                 MmdRow(MmdAnywhereLayout.RootXExtraKey, "RootT.x fine"),
+                 MmdRow(MmdAnywhereLayout.RootZExtraKey, "RootT.z fine")]),
+            new("Face", MmdAnywhereLayout.FaceNames.Select((name, i) => MmdRow(MmdAnywhereLayout.FaceKey(i), name)).ToArray()),
+            new("Reserved", MmdAnywhereLayout.ReservedKeys.Select(key => MmdRow(key, TrackingKeys.Names[key])).ToArray())
+        ];
+        mmdParameters = mmdGroups.SelectMany(group => group.Parameters).OrderBy(parameter => parameter.Index).ToArray();
+        Groups.ItemsSource = trackingGroups;
         Groups.SelectedIndex = 0;
         Player.PoseChanged += ApplyAnimationPose;
+        Player.MmdAnywherePacketChanged += ShowMmdAnywherePacket;
         statusTimer.Tick += (_, _) => UpdateStatus();
         Closed += (_, _) =>
         {
@@ -50,6 +79,31 @@ public partial class MainWindow : Window
     {
         values[index] = value;
         Volatile.Write(ref packet, OscPacket.CreateFacePacket(values));
+    }
+
+    private void ShowMmdAnywherePacket(byte[]? outgoing)
+    {
+        bool mmd = outgoing is not null;
+        if (mmd != showingMmdPacket)
+        {
+            if (mmd)
+                lastTrackingGroup = Groups.SelectedIndex;
+            else
+                lastMmdGroup = Groups.SelectedIndex;
+            showingMmdPacket = mmd;
+            Groups.ItemsSource = mmd ? mmdGroups : trackingGroups;
+            Groups.SelectedIndex = Math.Max(0, mmd ? lastMmdGroup : lastTrackingGroup);
+            ResetTrackingKeys.Visibility = mmd ? Visibility.Collapsed : Visibility.Visible;
+            TrackingHeading.Text = mmd ? "MMD Anywhere packet" : "Tracking keys";
+            TrackingDescription.Text = mmd ? "92 active native keys and 10 reserved zeros  ·  Read-only"
+                : "102 keys  ·  Drag a slider or enter a whole number from 0 to 255.";
+        }
+        if (outgoing is null)
+            return;
+
+        var payload = OscPacket.FacePayload(outgoing);
+        for (int i = 0; i < payload.Length; i++)
+            mmdParameters[i].ApplyPlaybackValue(payload[i]);
     }
 
     private void ApplyAnimationPose(byte[] pose, int[] channels)
@@ -95,7 +149,7 @@ public partial class MainWindow : Window
         }
 
         using var activeSession = new OscSession(listenEndpoint, destination,
-            () => Volatile.Read(ref packet), () => Player.HumanoidFrame, () => Player.CameraFrame);
+            () => Volatile.Read(ref packet), () => Player.BodyFrame, () => Player.CameraFrame);
         session = activeSession;
         NetworkFields.IsEnabled = false;
         StartStop.Content = "Stop streaming";
